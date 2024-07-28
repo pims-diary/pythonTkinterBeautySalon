@@ -1,7 +1,8 @@
 from Resources.Common.Root import root
+from Pages.Login.Login import Login
 
 # Create the main window
-app = Application(root)
+app = Login(root)
 
 # Run the main event loop
-rt.mainloop()
+root.mainloop()
