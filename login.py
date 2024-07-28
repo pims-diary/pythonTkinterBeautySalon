@@ -26,7 +26,7 @@ def custom_messagebox(title, message, msg_type):
         messagebox.showerror(title, message)
 
 
-class LoginApplication:
+class Application:
     def __init__(self, root):
         """Initialize the main login application"""
         self.menu_label = None
@@ -146,7 +146,7 @@ class Form:
 
 # Create the main window
 rt = tk.Tk()
-app = LoginApplication(rt)
+app = Application(rt)
 
 # Run the main event loop
 rt.mainloop()
