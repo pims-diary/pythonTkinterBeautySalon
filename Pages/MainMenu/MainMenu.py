@@ -1,4 +1,5 @@
 import tkinter as tk
+from Data.Models.User import User
 
 
 class MainMenu:
