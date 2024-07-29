@@ -1,0 +1,21 @@
+from enum import Enum, auto
+
+
+class Feature(Enum):
+    HOME = auto()
+    ADD_CUSTOMER = auto()
+    SEARCH_CUSTOMER = auto()
+
+
+def navigate_to(feature_name: Feature, root):
+    if feature_name == Feature.HOME:
+        from Pages.Home.Home import Home
+        home = Home(root)
+        home.render_home_page()
+    elif feature_name == Feature.ADD_CUSTOMER:
+        from Pages.ManageCustomers.AddNewCustomer import AddNewCustomer
+        customer = AddNewCustomer(root)
+        customer.render_add_new_customer_form()
+
+
+

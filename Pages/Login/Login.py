@@ -1,6 +1,8 @@
 import tkinter as tk
 from Resources.Common.Reuse import custom_messagebox
 from Pages.MainMenu.MainMenu import MainMenu
+from Pages.Home.Home import Home
+from Pages.Navigation.PageNavigation import navigate_to, Feature
 from Controller.Login.LoginController import login, validate_fields
 
 
@@ -54,9 +56,10 @@ class Login:
         login_result = login(entered_username, entered_password)
 
         if login_result:
-            # Navigate to Main Menu
-            menu = MainMenu(self.root)
-            menu.show_main_menu()
+            # Navigate to Home page
+            # home = Home(self.root)
+            # home.render_home_page()
+            navigate_to(Feature.HOME, self.root)
         else:
             custom_messagebox("Invalid Credentials Error", "Invalid username or password", "error")
             return
