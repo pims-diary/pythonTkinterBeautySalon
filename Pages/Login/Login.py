@@ -1,7 +1,7 @@
 import tkinter as tk
-from Resources.Common import Reuse
+from Resources.Common.Reuse import custom_messagebox
 from Pages.MainMenu.MainMenu import MainMenu
-from Controller.Login.LoginController import validate_user
+from Controller.Login.LoginController import login, validate_fields
 
 
 class Login:
@@ -41,14 +41,22 @@ class Login:
     def login(self):
         """Handle the login logic
             validating the username and password"""
+
+        # Check for empty text fields
+        if not validate_fields(self.username_entry, self.password_entry):
+            custom_messagebox("Blank Field Error", "Cannot leave username or password field blank", "error")
+            return
+
         entered_username = self.username_entry.get()
         entered_password = self.password_entry.get()
 
-        login_result = validate_user(entered_username, entered_password)
+        # Check username and password exist in database
+        login_result = login(entered_username, entered_password)
 
         if login_result:
             # Navigate to Main Menu
             menu = MainMenu(self.root)
             menu.show_main_menu()
         else:
-            Reuse.custom_messagebox("Error", "Invalid username or password", "error")
+            custom_messagebox("Invalid Credentials Error", "Invalid username or password", "error")
+            return

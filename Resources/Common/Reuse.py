@@ -19,3 +19,7 @@ def custom_messagebox(title, message, msg_type):
         messagebox.showinfo(title, message)
     elif msg_type == "error":
         messagebox.showerror(title, message)
+
+
+def is_textfield_empty(textfield):
+    return True if len(textfield.get()) == 0 else False
