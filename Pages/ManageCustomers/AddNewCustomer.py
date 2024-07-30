@@ -1,9 +1,8 @@
-from tkinter import *
 from tkinter import ttk
 import tkinter as tk
 from Pages.MainMenu.MainMenu import MainMenu
 from Controller.ManageCustomers.CustomersController import validate_fields, perform_add_customer
-from Resources.Common.Reuse import custom_messagebox, combo_selection
+from Resources.Common.Reuse import custom_messagebox
 from Data.Models.Customer import Customer
 
 customer_type = ["Guest", "Silver", "Gold", "Platinum"]
