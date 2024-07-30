@@ -29,7 +29,7 @@ def validate_user(username, password):
         return False
 
 
-def create_customer(customer_id, customer: Customer):
+def create_customer(customer_id: int, customer: Customer):
     try:
         query = '''
         INSERT INTO Customers(customerId, name, email, phone, type)
@@ -47,3 +47,25 @@ def create_customer(customer_id, customer: Customer):
             cursor.close()
         if 'connection' in locals() and connection:
             connection.close()
+
+
+def get_last_customer_id():
+    query = '''
+        SELECT customerId FROM Customers WHERE customerId=(SELECT max(customerId) FROM Customers)
+        '''
+
+    cursor.execute(query)
+
+    customer_id: int = cursor.fetchall()[0][0]
+
+    return customer_id
+
+
+def search_customer(customer_id):
+    query = '''
+        SELECT * FROM Customers WHERE customerId=?
+        '''
+
+    cursor.execute(query, customer_id)
+
+    return cursor.fetchall()

@@ -23,3 +23,9 @@ def custom_messagebox(title, message, msg_type):
 
 def is_textfield_empty(textfield):
     return True if len(textfield.get()) == 0 else False
+
+
+def combo_selection(combo_box, combo_list):
+    for x in range(len(combo_list)):
+        if combo_box.get() == combo_list[x]:
+            return combo_list[x]

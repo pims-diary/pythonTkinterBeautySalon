@@ -28,8 +28,8 @@ class Toolbar:
         self.menu_bar.add_cascade(label="Customers", menu=self.toolbar_customers)
 
         self.toolbar_customers.add_command(label="Add Customer", command=self.add_customer)
+        self.toolbar_customers.add_command(label="Search Customer", command=self.search_customer)
         self.toolbar_customers.add_command(label="Members", command=self.members)
-        self.toolbar_customers.add_command(label="Manage Customer", command=self.manage_customer)
 
         self.toolbar_offerings = tk.Menu(self.menu_bar, tearoff=0)
         self.menu_bar.add_cascade(label="Offerings", menu=self.toolbar_offerings)
@@ -43,9 +43,8 @@ class Toolbar:
     def add_customer(self):
         navigate_to(Feature.ADD_CUSTOMER, self.root)
 
-    def manage_customer(self):
-        """Open Manage Customer form"""
-        Form(self.root, "Manage Customer")
+    def search_customer(self):
+        navigate_to(Feature.SEARCH_CUSTOMER, self.root)
 
     def services(self):
         """Open Services form"""

@@ -16,6 +16,10 @@ def navigate_to(feature_name: Feature, root):
         from Pages.ManageCustomers.AddNewCustomer import AddNewCustomer
         customer = AddNewCustomer(root)
         customer.render_add_new_customer_form()
+    elif feature_name == Feature.SEARCH_CUSTOMER:
+        from Pages.ManageCustomers.SearchCustomer import SearchCustomer
+        search = SearchCustomer(root)
+        search.render_search_customer_form()
 
 
 
