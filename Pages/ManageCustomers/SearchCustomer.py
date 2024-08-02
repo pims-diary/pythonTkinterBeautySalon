@@ -55,4 +55,4 @@ class SearchCustomer(MainMenu):
         else:
             height = 1
             width = 5
-            make_table(height,width, self.frame, customer_info[0])
+            make_table(height, width, self.frame, customer_info[0])
