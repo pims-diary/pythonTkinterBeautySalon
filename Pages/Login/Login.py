@@ -1,9 +1,7 @@
 import tkinter as tk
-from Resources.Common.Reuse import custom_messagebox
-from Pages.MainMenu.MainMenu import MainMenu
-from Pages.Home.Home import Home
+from Resources.Common.Reuse import custom_messagebox, validate_fields
 from Pages.Navigation.PageNavigation import navigate_to, Feature
-from Controller.Login.LoginController import login, validate_fields
+from Controller.Login.LoginController import login
 
 
 class Login:
@@ -45,7 +43,7 @@ class Login:
             validating the username and password"""
 
         # Check for empty text fields
-        if not validate_fields(self.username_entry, self.password_entry):
+        if not validate_fields((self.username_entry, self.password_entry)):
             custom_messagebox("Blank Field Error", "Cannot leave username or password field blank", "error")
             return
 
@@ -57,8 +55,6 @@ class Login:
 
         if login_result:
             # Navigate to Home page
-            # home = Home(self.root)
-            # home.render_home_page()
             navigate_to(Feature.HOME, self.root)
         else:
             custom_messagebox("Invalid Credentials Error", "Invalid username or password", "error")

@@ -1,16 +1,22 @@
-from Resources.Common.Root import root
 from tkinter import messagebox
+import tkinter as tk
 
 
-def destroy_child_view(master):
+def destroy_child_view(widget):
     """ Destroys all child widgets of master """
-    for i in master.winfo_children():
+    for i in widget.winfo_children():
         i.destroy()
 
 
-def exit_app():
-    """ Terminate the App """
-    root.destroy()
+def clean_master_view(master):
+    """ Destroys all child widgets of master """
+    destroy_child_view(master)
+    master.geometry("600x400")
+
+
+def exit_screen(master):
+    """ Terminate the Screen """
+    master.destroy()
 
 
 def custom_messagebox(title, message, msg_type):
@@ -29,3 +35,22 @@ def combo_selection(combo_box, combo_list):
     for x in range(len(combo_list)):
         if combo_box.get() == combo_list[x]:
             return combo_list[x]
+
+
+def validate_fields(fields: tuple):
+    for field in fields:
+        if is_textfield_empty(field):
+            return False
+    return True
+
+
+def make_table(height, width, parent, items):
+    for i in range(height):  # Rows
+        for j in range(width):  # Columns
+            b = tk.Label(parent, text=items[j])
+            b.grid(row=i, column=j)
+
+
+def pack_all(widget):
+    for c in widget.children:
+        widget.children[c].pack()

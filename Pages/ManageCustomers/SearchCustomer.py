@@ -1,8 +1,7 @@
 import tkinter as tk
 from Pages.MainMenu.MainMenu import MainMenu
-from Controller.ManageCustomers.CustomersController import validate_fields
 from Data.DataLink.SqlDatabaseToData import search_customer
-from Resources.Common.Reuse import custom_messagebox
+from Resources.Common.Reuse import custom_messagebox, validate_fields, destroy_child_view, make_table
 
 
 class SearchCustomer(MainMenu):
@@ -36,7 +35,9 @@ class SearchCustomer(MainMenu):
         self.frame.pack()
 
     def search(self):
-        if not validate_fields(self.id_entry, self.id_entry, self.id_entry):
+        destroy_child_view(self.frame)
+
+        if not validate_fields((self.id_entry,)):
             custom_messagebox("Blank Field Error", "Cannot leave Customer ID field blank", "error")
             return
 
@@ -54,7 +55,4 @@ class SearchCustomer(MainMenu):
         else:
             height = 1
             width = 5
-            for i in range(height):  # Rows
-                for j in range(width):  # Columns
-                    b = tk.Label(self.frame, text=customer_info[0][j])
-                    b.grid(row=i, column=j)
+            make_table(height,width, self.frame, customer_info[0])

@@ -1,5 +1,6 @@
 import tkinter as tk
 from Pages.Navigation.PageNavigation import navigate_to, Feature
+from Pages.Common.Form import Form
 
 
 class Toolbar:
@@ -20,6 +21,7 @@ class Toolbar:
         self.menu_bar.add_cascade(label="Menu", menu=self.toolbar_menu)
 
         self.toolbar_menu.add_command(label="Home", command=self.home)
+        self.toolbar_menu.add_command(label="Checkout", command=self.checkout)
         self.toolbar_menu.add_command(label="Billing", command=self.billing)
         self.toolbar_menu.add_separator()
         self.toolbar_menu.add_command(label="Exit", command=self.root.quit)
@@ -39,6 +41,9 @@ class Toolbar:
 
     def home(self):
         navigate_to(Feature.HOME, self.root)
+
+    def checkout(self):
+        navigate_to(Feature.CHECKOUT, self.root)
 
     def add_customer(self):
         navigate_to(Feature.ADD_CUSTOMER, self.root)
@@ -61,24 +66,3 @@ class Toolbar:
     def billing(self):
         """Open Billing form"""
         Form(self.root, "Billing")
-
-
-class Form:
-    """Class for creating forms for different menu options.
-        Demonstrates inheritance."""
-
-    def __init__(self, root, title):
-        """Initialize the form window"""
-        self.new_window = tk.Toplevel(root)
-        self.new_window.title(title)
-        self.new_window.geometry("600x500")
-        self.new_window.configure(bg="white")
-
-        self.title_label = tk.Label(self.new_window, text=title, font=("Helvetica", 18, "bold"), bg="#add8e6",
-                                    fg="#333333")
-        self.title_label.pack(pady=30)
-
-        # Example label for the form
-        self.example_label = tk.Label(self.new_window, text=f"This is the {title} form.", font=("Helvetica", 14),
-                                      bg="#add8e6", fg="#333333")
-        self.example_label.pack(pady=20)

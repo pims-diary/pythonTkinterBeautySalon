@@ -1,8 +1,8 @@
 from tkinter import ttk
 import tkinter as tk
 from Pages.MainMenu.MainMenu import MainMenu
-from Controller.ManageCustomers.CustomersController import validate_fields, perform_add_customer
-from Resources.Common.Reuse import custom_messagebox
+from Controller.ManageCustomers.CustomersController import perform_add_customer
+from Resources.Common.Reuse import custom_messagebox, validate_fields
 from Data.Models.Customer import Customer
 
 customer_type = ["Guest", "Silver", "Gold", "Platinum"]
@@ -13,13 +13,18 @@ class AddNewCustomer(MainMenu):
         super().__init__(root)
         self.root = root
         self.root.title("Add New Customer")
+        self.root.geometry("600x600")
         self.name_entry = None
         self.email_entry = None
         self.phone_entry = None
         self.type_entry = None
 
     def render_add_new_customer_form(self):
-        title_label = tk.Label(self.root, text="ADD NEW CUSTOMER", font=("Times", 20, "bold"), bg="#add8e6", fg="#333333")
+        title_label = tk.Label(self.root,
+                               text="ADD NEW CUSTOMER",
+                               font=("Times", 20, "bold"),
+                               bg="#add8e6",
+                               fg="#333333")
         title_label.pack(pady=15)
 
         # Customer name label and entry
@@ -54,7 +59,7 @@ class AddNewCustomer(MainMenu):
         add_button.pack(pady=50)
 
     def add_new(self):
-        if not validate_fields(self.name_entry, self.email_entry, self.phone_entry):
+        if not validate_fields((self.name_entry, self.email_entry, self.phone_entry)):
             custom_messagebox("Blank Field Error", "Cannot leave username or password field blank", "error")
             return
 
@@ -63,5 +68,6 @@ class AddNewCustomer(MainMenu):
         customer.email = self.email_entry.get()
         customer.phone = self.phone_entry.get()
         customer.type = self.type_entry.get()
+        customer.is_new = True
 
         perform_add_customer(customer)

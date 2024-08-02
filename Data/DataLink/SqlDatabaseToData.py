@@ -32,11 +32,12 @@ def validate_user(username, password):
 def create_customer(customer_id: int, customer: Customer):
     try:
         query = '''
-        INSERT INTO Customers(customerId, name, email, phone, type)
-        VALUES (?, ?, ?, ?, ?)
+        INSERT INTO Customers(customerId, name, email, phone, type, isNew)
+        VALUES (?, ?, ?, ?, ?, ?)
         '''
 
-        cursor.execute(query, (customer_id, customer.name, customer.email, customer.phone, customer.type))
+        cursor.execute(query,
+                       (customer_id, customer.name, customer.email, customer.phone, customer.type, customer.is_new))
 
         connection.commit()
 
@@ -67,5 +68,15 @@ def search_customer(customer_id):
         '''
 
     cursor.execute(query, customer_id)
+
+    return cursor.fetchall()
+
+
+def search_offering(offering_id):
+    query = '''
+        SELECT * FROM Offerings WHERE offeringId=?
+        '''
+
+    cursor.execute(query, offering_id)
 
     return cursor.fetchall()

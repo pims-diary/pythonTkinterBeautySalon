@@ -1,6 +1,6 @@
 import tkinter as tk
 from Pages.MainMenu.Toolbar import Toolbar
-from Resources.Common.Reuse import destroy_child_view
+from Resources.Common.Reuse import clean_master_view
 
 
 class MainMenu:
@@ -13,10 +13,10 @@ class MainMenu:
 
     def show_main_menu(self):
         """Display the main menu / dashboard after successful login"""
-        destroy_child_view(self.root)
+        clean_master_view(self.root)
 
         self.menu_frame = tk.Frame(self.root, bg="#add8e6")
-        self.menu_frame.pack(fill=tk.BOTH, expand=True)
+        # self.menu_frame.pack(fill=tk.BOTH, expand=True)
 
         tools = Toolbar(self.root)
         tools.render_toolbar()

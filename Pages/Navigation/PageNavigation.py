@@ -5,6 +5,7 @@ class Feature(Enum):
     HOME = auto()
     ADD_CUSTOMER = auto()
     SEARCH_CUSTOMER = auto()
+    CHECKOUT = auto()
 
 
 def navigate_to(feature_name: Feature, root):
@@ -20,6 +21,7 @@ def navigate_to(feature_name: Feature, root):
         from Pages.ManageCustomers.SearchCustomer import SearchCustomer
         search = SearchCustomer(root)
         search.render_search_customer_form()
-
-
-
+    elif feature_name == Feature.CHECKOUT:
+        from Pages.Checkout.Checkout import Checkout
+        checkout = Checkout(root)
+        checkout.start_checkout_flow()

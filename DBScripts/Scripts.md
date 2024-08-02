@@ -19,6 +19,19 @@ CREATE TABLE Customers(
   	email VARCHAR(128),
 	phone VARCHAR(128),
 	type VARCHAR(64),
+	isNew bit,
 	PRIMARY KEY(customerId)
+);
+```
+
+### Create Offerings Table:
+```
+CREATE TABLE Offerings(
+	offeringId INT NOT NULL,
+  	offeringName VARCHAR(128),
+  	offeringType VARCHAR(128),
+	description VARCHAR(128),
+	price VARCHAR(128),
+	PRIMARY KEY(offeringId)
 );
 ```

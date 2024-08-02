@@ -1,47 +1,47 @@
-class Customer:
+class Offering:
     def __init__(self):
+        self.id = 0
         self.name = ""
-        self.email = ""
-        self.phone = ""
         self.type = ""
-        self.is_new = False
+        self.description = ""
+        self.price = ""
 
     @property  # this is also automatically the getter
-    def name(self):
+    def id(self):
         return self._name
 
-    @name.setter
-    def name(self, value):
+    @id.setter
+    def id(self, value):
         self._name = value
 
     @property  # this is also automatically the getter
-    def email(self):
+    def name(self):
         return self._email
 
-    @email.setter
-    def email(self, value):
+    @name.setter
+    def name(self, value):
         self._email = value
 
     @property  # this is also automatically the getter
-    def phone(self):
-        return self._phone
-
-    @phone.setter
-    def phone(self, value):
-        self._phone = value
-
-    @property  # this is also automatically the getter
     def type(self):
-        return self._type
+        return self._phone
 
     @type.setter
     def type(self, value):
+        self._phone = value
+
+    @property  # this is also automatically the getter
+    def description(self):
+        return self._type
+
+    @description.setter
+    def description(self, value):
         self._type = value
 
     @property  # this is also automatically the getter
-    def is_new(self):
+    def price(self):
         return self._is_new
 
-    @is_new.setter
-    def is_new(self, value):
+    @price.setter
+    def price(self, value):
         self._is_new = value
