@@ -24,6 +24,7 @@ def store_customer(data):
     customer.email = data[2]
     customer.phone = data[3]
     customer.type = data[4]
+    customer.is_new = data[5]
 
     return customer
 
@@ -46,12 +47,10 @@ def sort_cart(offering: Offering, items: list[CartItem], added_quantity: int):
 
 def add_discounts_in_cart(items: list[CartItem], customer: Customer):
     """
-    Add discounts to each item or as a whole based on
+    Add discounts to each item based on
     - the customer type,
     - the item type,
-    - if first time customer
     """
-    gift = 0.0
     # Check if Member
     if not customer.type == "Guest":
         # if Member, check Product / Service
@@ -76,8 +75,15 @@ def add_discounts_in_cart(items: list[CartItem], customer: Customer):
                 # Database error in Item type
                 return None
 
-    # Check if new customer
-    if customer.is_new:
-        gift = Discounts.NEW_CUSTOMER_GIFT_AMOUNT
+    return items
 
-    return items, gift
+
+def calculate_total_amount(items: list[CartItem], customer: Customer):
+    total_amount = 0.0
+    for item in items:
+        total_amount = total_amount + item.total_price
+
+    if customer.is_new:
+        total_amount = total_amount - Discounts.NEW_CUSTOMER_GIFT_AMOUNT
+
+    return total_amount

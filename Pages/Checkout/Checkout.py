@@ -4,7 +4,11 @@ from Data.DataLink.SqlDatabaseToData import search_offering, search_customer
 from Data.Models.Offering import Offering
 from Data.Models.Cart import Cart
 from Data.Models.Customer import Customer
-from Controller.Checkout.CheckoutController import store_offering, store_customer, sort_cart, add_discounts_in_cart
+from Controller.Checkout.CheckoutController import (store_offering,
+                                                    store_customer,
+                                                    sort_cart,
+                                                    add_discounts_in_cart,
+                                                    calculate_total_amount)
 from Pages.ManageCustomers.AddCustomerInCheckout import AddCustomerInCheckout
 import tkinter as tk
 import tksheet
@@ -15,19 +19,28 @@ class Checkout(MainMenu):
         super().__init__(root)
         self.root = root
         self.sheet = tksheet.Sheet(self.root)
-        self.id_entry = None
+
+        # Frames / sections within Checkout page
         self.item_display_frame = None
         self.customer_display_frame = None
-        self.add_item_screen = None
-        self.offering = Offering()
-        self.cart = Cart()
-        self.gift = 0.0
-        self.cart_height = 0
         self.cart_frame = None
+        self.proceed_frame = None
+
+        # Windows / Screens outside Checkout page
+        self.add_item_screen = None
         self.link_customer_screen = None
         self.add_customer_screen = None
-        self.proceed_frame = None
-        self.customer = Customer()
+
+        # Reusable entry field
+        self.id_entry = None
+
+        # Data Models
+        self.offering = Offering()
+        self.cart = Cart()
+
+        # class variables
+        self.gift = 0.0
+        self.cart_height = 0
 
     def start_checkout_flow(self):
         # Title label
@@ -37,8 +50,6 @@ class Checkout(MainMenu):
         # Cart items frame
         self.cart_frame = tk.Frame(self.root, highlightbackground="black", highlightthickness=1)
         self.cart_frame.pack()
-
-        # Datatable to display Added offerings
 
         # Add button
         add_button = tk.Button(self.root, text="ADD ITEM", command=self.add_item)
@@ -57,6 +68,13 @@ class Checkout(MainMenu):
         self.proceed_frame.pack()
 
     def add_item(self):
+        """
+        Add an item to the cart.
+        User is navigated away to Search an item to add.
+        After search completion, User is returned back
+        to the Checkout page and the added cart item is
+        displayed.
+        """
         self.add_item_screen = tk.Toplevel(self.root)
         self.add_item_screen.title("Search item")
         self.add_item_screen.geometry("600x400")
@@ -83,6 +101,11 @@ class Checkout(MainMenu):
         self.item_display_frame.pack()
 
     def search_offering(self):
+        """
+        User is navigated away to Search an item to add to cart.
+        The function caters to a successful search and multiple
+        possible error scenarios for searching an offering.
+        """
         destroy_child_view(self.item_display_frame)
 
         if not validate_fields((self.id_entry,)):
@@ -112,6 +135,10 @@ class Checkout(MainMenu):
             self.offering = store_offering(item)
 
     def add_to_cart(self):
+        """
+        Adding of item to cart is performed.
+        The new window to search is destroyed on task completion.
+        """
         self.cart.items = sort_cart(self.offering, self.cart.items, 1)
         exit_screen(self.add_item_screen)
 
@@ -174,10 +201,10 @@ class Checkout(MainMenu):
             width = 5
             make_table(height, width, self.customer_display_frame, customer_info[0])
 
-            self.customer = store_customer(customer_info[0])
+            self.cart.customer = store_customer(customer_info[0])
 
             link_this_customer_button = tk.Button(self.customer_display_frame, text="LINK THIS CUSTOMERS",
-                                                  command=lambda: self.add_and_link_customer(self.customer))
+                                                  command=lambda: self.add_and_link_customer(self.cart.customer))
             link_this_customer_button.grid(row=2)
 
     def add_customer(self):
@@ -193,24 +220,24 @@ class Checkout(MainMenu):
         exit_screen(self.add_customer_screen)
         exit_screen(self.link_customer_screen)
 
-        self.customer = customer
-        tk.Label(self.proceed_frame, text=self.customer.id).grid(row=0, column=0)
-        tk.Label(self.proceed_frame, text=self.customer.name).grid(row=0, column=1)
-        tk.Label(self.proceed_frame, text=self.customer.email).grid(row=0, column=2)
-        tk.Label(self.proceed_frame, text=self.customer.phone).grid(row=0, column=3)
-        tk.Label(self.proceed_frame, text=self.customer.type).grid(row=0, column=4)
+        self.cart.customer = customer
+        tk.Label(self.proceed_frame, text=self.cart.customer.id).grid(row=0, column=0)
+        tk.Label(self.proceed_frame, text=self.cart.customer.name).grid(row=0, column=1)
+        tk.Label(self.proceed_frame, text=self.cart.customer.email).grid(row=0, column=2)
+        tk.Label(self.proceed_frame, text=self.cart.customer.phone).grid(row=0, column=3)
+        tk.Label(self.proceed_frame, text=self.cart.customer.type).grid(row=0, column=4)
 
-        tk.Button(self.proceed_frame, text="PROCEED TO PAY", pady=10).grid(row=1, column=2)
+        tk.Button(self.proceed_frame, text="PROCEED TO PAY",
+                  command=self.proceed_to_pay, pady=10).grid(row=1, column=2)
 
-        cart_changes = add_discounts_in_cart(self.cart.items, self.customer)
+        cart_changes = add_discounts_in_cart(self.cart.items, self.cart.customer)
 
         if cart_changes is None:
             custom_messagebox("Server Error",
                               "Oops, there is something wrong with the data. Please contact the app admin",
                               "error")
         else:
-            self.cart.items = cart_changes[0]
-            self.gift = cart_changes[1]
+            self.cart.items = cart_changes
 
         self.render_cart_items()
 
@@ -220,32 +247,25 @@ class Checkout(MainMenu):
         height = len(self.cart.items)
         for i in range(height):
             tk.Label(self.cart_frame, text=self.cart.items[i].offering.name).grid(row=i, column=0)
-            tk.Label(self.cart_frame, text=self.cart.items[i].offering.price).grid(row=i, column=1)
+            tk.Label(self.cart_frame, text="$" + str(self.cart.items[i].offering.price)).grid(row=i, column=1)
             tk.Label(self.cart_frame, text=self.cart.items[i].no_of_items).grid(row=i, column=3)
             if self.cart.items[i].discount == 0.0:
                 discount = 'N/A'
             else:
                 discount = self.cart.items[i].discount
             tk.Label(self.cart_frame, text=discount).grid(row=i, column=4)
-            tk.Label(self.cart_frame, text=self.cart.items[i].total_price).grid(row=i, column=5)
+            tk.Label(self.cart_frame, text="$" + str(self.cart.items[i].total_price)).grid(row=i, column=5)
+
+        tk.Label(self.cart_frame, text="Gift: ").grid(row=height + 1, column=0)
+        if self.cart.customer.is_new:
+            gift = "20.00"
+        else:
+            gift = "0.00"
+        tk.Label(self.cart_frame, text="$" + str(gift)).grid(row=height + 1, column=2)
+
+        tk.Label(self.cart_frame, text="Total Amount: ").grid(row=height + 2, column=0)
+        total_amount = calculate_total_amount(self.cart.items, self.cart.customer)
+        tk.Label(self.cart_frame, text="$" + str(total_amount)).grid(row=height + 2, column=2)
 
     def proceed_to_pay(self):
         pass
-
-        # self.sheet.grid()
-        # self.sheet.set_sheet_data([[f"{ri + cj}" for cj in range(4)] for ri in range(1)])
-        # table enable choices listed below:
-        # self.sheet.enable_bindings(("single_select",
-        #                        "row_select",
-        #                        "column_width_resize",
-        #                        "arrowkeys",
-        #                        "right_click_popup_menu",
-        #                        "rc_select",
-        #                        "rc_insert_row",
-        #                        "rc_delete_row",
-        #                        "copy",
-        #                        "cut",
-        #                        "paste",
-        #                        "delete",
-        #                        "undo",
-        #                        "edit_cell"))

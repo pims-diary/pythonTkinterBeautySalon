@@ -1,9 +1,12 @@
 from Data.Models.Offering import Offering
+from Data.Models.Customer import Customer
 
 
 class Cart:
     def __init__(self):
         self.items: list[CartItem] = []
+        self.total_amount = 0.0
+        self.customer = Customer()
 
     @property
     def items(self):
@@ -12,6 +15,22 @@ class Cart:
     @items.setter
     def items(self, value):
         self._items = value
+
+    @property
+    def total_amount(self):
+        return self._total_amount
+
+    @total_amount.setter
+    def total_amount(self, value):
+        self._total_amount = value
+
+    @property
+    def customer(self):
+        return self._customer
+
+    @customer.setter
+    def customer(self, value):
+        self._customer = value
 
 
 class CartItem:
