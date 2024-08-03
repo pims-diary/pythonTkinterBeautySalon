@@ -1,6 +1,6 @@
 from tkinter import ttk
 import tkinter as tk
-from Pages.MainMenu.MainMenu import MainMenu
+from Pages.ParentPages.MainMenu import MainMenu
 from Controller.ManageCustomers.CustomersController import perform_add_customer
 from Resources.Common.Reuse import custom_messagebox, validate_fields
 from Data.Models.Customer import Customer

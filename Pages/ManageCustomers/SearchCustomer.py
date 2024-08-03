@@ -1,5 +1,5 @@
 import tkinter as tk
-from Pages.MainMenu.MainMenu import MainMenu
+from Pages.ParentPages.MainMenu import MainMenu
 from Data.DataLink.SqlDatabaseToData import search_customer
 from Resources.Common.Reuse import custom_messagebox, validate_fields, destroy_child_view, make_table
 

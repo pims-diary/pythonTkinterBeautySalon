@@ -1,6 +1,6 @@
 import tkinter as tk
 from Pages.Navigation.PageNavigation import navigate_to, Feature
-from Pages.Common.Form import Form
+from Pages.ParentPages.PopUpForm import PopUpForm
 
 
 class Toolbar:
@@ -53,16 +53,16 @@ class Toolbar:
 
     def services(self):
         """Open Services form"""
-        Form(self.root, "Services")
+        PopUpForm(self.root, "Services")
 
     def products(self):
         """Open Products form"""
-        Form(self.root, "Products")
+        PopUpForm(self.root, "Products")
 
     def members(self):
         """Open Members form"""
-        Form(self.root, "Members")
+        PopUpForm(self.root, "Members")
 
     def billing(self):
         """Open Billing form"""
-        Form(self.root, "Billing")
+        PopUpForm(self.root, "Billing")

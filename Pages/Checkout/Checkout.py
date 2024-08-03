@@ -1,5 +1,10 @@
-from Pages.MainMenu.MainMenu import MainMenu
-from Resources.Common.Reuse import validate_fields, custom_messagebox, destroy_child_view, exit_screen, make_table
+from Pages.ParentPages.MainMenu import MainMenu
+from Resources.Common.Reuse import (validate_fields,
+                                    custom_messagebox,
+                                    destroy_child_view,
+                                    exit_screen,
+                                    make_table,
+                                    clean_master_view)
 from Data.DataLink.SqlDatabaseToData import search_offering, search_customer
 from Data.Models.Offering import Offering
 from Data.Models.Cart import Cart
@@ -10,6 +15,7 @@ from Controller.Checkout.CheckoutController import (store_offering,
                                                     add_discounts_in_cart,
                                                     calculate_total_amount)
 from Pages.ManageCustomers.AddCustomerInCheckout import AddCustomerInCheckout
+from Pages.Checkout.PaymentMethod import PaymentMethod
 import tkinter as tk
 import tksheet
 
@@ -264,8 +270,11 @@ class Checkout(MainMenu):
         tk.Label(self.cart_frame, text="$" + str(gift)).grid(row=height + 1, column=2)
 
         tk.Label(self.cart_frame, text="Total Amount: ").grid(row=height + 2, column=0)
-        total_amount = calculate_total_amount(self.cart.items, self.cart.customer)
-        tk.Label(self.cart_frame, text="$" + str(total_amount)).grid(row=height + 2, column=2)
+        self.cart.total_amount = calculate_total_amount(self.cart.items, self.cart.customer)
+        tk.Label(self.cart_frame, text="$" + str(self.cart.total_amount)).grid(row=height + 2, column=2)
 
     def proceed_to_pay(self):
-        pass
+        clean_master_view(self.root)
+        PaymentMethod(self.root, self.cart)
+
+

@@ -4,8 +4,9 @@ import tkinter as tk
 
 def destroy_child_view(widget):
     """ Destroys all child widgets of master """
-    for i in widget.winfo_children():
-        i.destroy()
+    if widget is not None:
+        for i in widget.winfo_children():
+            i.destroy()
 
 
 def clean_master_view(master):

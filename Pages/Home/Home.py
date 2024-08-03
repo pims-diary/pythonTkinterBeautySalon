@@ -1,5 +1,5 @@
 import tkinter as tk
-from Pages.MainMenu.MainMenu import MainMenu
+from Pages.ParentPages.MainMenu import MainMenu
 
 
 class Home(MainMenu):

@@ -1,5 +1,5 @@
 import tkinter as tk
-from Pages.MainMenu.Toolbar import Toolbar
+from Pages.ParentPages.Toolbar import Toolbar
 from Resources.Common.Reuse import clean_master_view
 
 
@@ -16,7 +16,6 @@ class MainMenu:
         clean_master_view(self.root)
 
         self.menu_frame = tk.Frame(self.root, bg="#add8e6")
-        # self.menu_frame.pack(fill=tk.BOTH, expand=True)
 
         tools = Toolbar(self.root)
         tools.render_toolbar()
