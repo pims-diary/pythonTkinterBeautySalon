@@ -1,6 +1,7 @@
 from Data.Models.Offering import Offering
 from Data.Models.Customer import Customer
 from Data.Models.Cart import CartItem
+from Resources.Common.Rules import Discounts
 
 
 def store_offering(item):
@@ -28,6 +29,10 @@ def store_customer(data):
 
 
 def sort_cart(offering: Offering, items: list[CartItem], added_quantity: int):
+    """Sort items to cart
+                If the offering to be added already exists,
+                then increase the number of items for the offering,
+                else add the offering as a new cart item"""
     for item in items:
         if item.offering.id == offering.id:
             item.no_of_items = item.no_of_items + added_quantity
@@ -37,3 +42,42 @@ def sort_cart(offering: Offering, items: list[CartItem], added_quantity: int):
     cart_item.no_of_items = added_quantity
     items.append(cart_item)
     return items
+
+
+def add_discounts_in_cart(items: list[CartItem], customer: Customer):
+    """
+    Add discounts to each item or as a whole based on
+    - the customer type,
+    - the item type,
+    - if first time customer
+    """
+    gift = 0.0
+    # Check if Member
+    if not customer.type == "Guest":
+        # if Member, check Product / Service
+        for item in items:
+            if item.offering.type == "Product":
+                # Flat 10% (customisable) discount on products for all members
+                item.discount = Discounts.PRODUCT_DISCOUNT_PERCENT
+            elif item.offering.type == "Service":
+                if customer.type == "Premium":
+                    # 20% discount on services for Premium customers
+                    item.discount = Discounts.SERVICE_DISCOUNT_FOR_PREMIUM_PERCENT
+                elif customer.type == "Gold":
+                    # 15% discount on services for Gold customers
+                    item.discount = Discounts.SERVICE_DISCOUNT_FOR_GOLD_PERCENT
+                elif customer.type == "Silver":
+                    # 10% discount on services for Silver customers
+                    item.discount = Discounts.SERVICE_DISCOUNT_FOR_SILVER_PERCENT
+                else:
+                    # Database error in Customer type
+                    return None
+            else:
+                # Database error in Item type
+                return None
+
+    # Check if new customer
+    if customer.is_new:
+        gift = Discounts.NEW_CUSTOMER_GIFT_AMOUNT
+
+    return items, gift

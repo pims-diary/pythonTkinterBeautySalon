@@ -18,6 +18,7 @@ class CartItem:
     def __init__(self):
         self.offering = Offering()
         self.no_of_items = 0
+        self.discount = 0.0
 
     @property
     def offering(self):
@@ -36,5 +37,13 @@ class CartItem:
         self._no_of_items = value
 
     @property
+    def discount(self):
+        return self._discount
+
+    @discount.setter
+    def discount(self, value):
+        self._discount = float(value)
+
+    @property
     def total_price(self):
-        return float(self._offering.price) * self._no_of_items
+        return (float(self._offering.price) * self._no_of_items) * (100.0 - float(self._discount)) / 100.0

@@ -2,9 +2,9 @@ from Pages.MainMenu.MainMenu import MainMenu
 from Resources.Common.Reuse import validate_fields, custom_messagebox, destroy_child_view, exit_screen, make_table
 from Data.DataLink.SqlDatabaseToData import search_offering, search_customer
 from Data.Models.Offering import Offering
-from Data.Models.Cart import Cart, CartItem
+from Data.Models.Cart import Cart
 from Data.Models.Customer import Customer
-from Controller.Checkout.CheckoutController import store_offering, store_customer, sort_cart
+from Controller.Checkout.CheckoutController import store_offering, store_customer, sort_cart, add_discounts_in_cart
 from Pages.ManageCustomers.AddCustomerInCheckout import AddCustomerInCheckout
 import tkinter as tk
 import tksheet
@@ -15,18 +15,13 @@ class Checkout(MainMenu):
         super().__init__(root)
         self.root = root
         self.sheet = tksheet.Sheet(self.root)
-        self.search_entry = None
         self.id_entry = None
-        self.name_entry = None
-        self.email_entry = None
-        self.phone_entry = None
-        self.type_entry = None
         self.item_display_frame = None
         self.customer_display_frame = None
         self.add_item_screen = None
         self.offering = Offering()
-        self.cart_item = CartItem()
         self.cart = Cart()
+        self.gift = 0.0
         self.cart_height = 0
         self.cart_frame = None
         self.link_customer_screen = None
@@ -120,14 +115,7 @@ class Checkout(MainMenu):
         self.cart.items = sort_cart(self.offering, self.cart.items, 1)
         exit_screen(self.add_item_screen)
 
-        destroy_child_view(self.cart_frame)
-
-        height = len(self.cart.items)
-        for i in range(height):
-            tk.Label(self.cart_frame, text=self.cart.items[i].offering.name).grid(row=i, column=0)
-            tk.Label(self.cart_frame, text=self.cart.items[i].offering.price).grid(row=i, column=1)
-            tk.Label(self.cart_frame, text=self.cart.items[i].no_of_items).grid(row=i, column=3)
-            tk.Label(self.cart_frame, text=self.cart.items[i].total_price).grid(row=i, column=4)
+        self.render_cart_items()
 
     def link_customer(self):
         if len(self.cart.items) == 0:
@@ -189,14 +177,8 @@ class Checkout(MainMenu):
             self.customer = store_customer(customer_info[0])
 
             link_this_customer_button = tk.Button(self.customer_display_frame, text="LINK THIS CUSTOMERS",
-                                                  command=self.execute_customer_link)
+                                                  command=lambda: self.add_and_link_customer(self.customer))
             link_this_customer_button.grid(row=2)
-
-    def execute_customer_link(self):
-        # Exit window
-        exit_screen(self.link_customer_screen)
-        proceed_button = tk.Button(self.proceed_frame, text="PROCEED TO PAY", command=self.proceed_to_pay)
-        proceed_button.pack(pady=10)
 
     def add_customer(self):
         self.add_customer_screen = tk.Toplevel(self.root)
@@ -207,16 +189,45 @@ class Checkout(MainMenu):
         screen = AddCustomerInCheckout(self.root)
         screen.render_add_customer_pop_up(self.add_customer_screen, self)
 
-    def add_and_link_new(self, customer: Customer):
+    def add_and_link_customer(self, customer: Customer):
         exit_screen(self.add_customer_screen)
         exit_screen(self.link_customer_screen)
-        tk.Label(self.proceed_frame, text=customer.id).grid(row=0, column=0)
-        tk.Label(self.proceed_frame, text=customer.name).grid(row=0, column=1)
-        tk.Label(self.proceed_frame, text=customer.email).grid(row=0, column=2)
-        tk.Label(self.proceed_frame, text=customer.phone).grid(row=0, column=3)
-        tk.Label(self.proceed_frame, text=customer.type).grid(row=0, column=4)
+
+        self.customer = customer
+        tk.Label(self.proceed_frame, text=self.customer.id).grid(row=0, column=0)
+        tk.Label(self.proceed_frame, text=self.customer.name).grid(row=0, column=1)
+        tk.Label(self.proceed_frame, text=self.customer.email).grid(row=0, column=2)
+        tk.Label(self.proceed_frame, text=self.customer.phone).grid(row=0, column=3)
+        tk.Label(self.proceed_frame, text=self.customer.type).grid(row=0, column=4)
 
         tk.Button(self.proceed_frame, text="PROCEED TO PAY", pady=10).grid(row=1, column=2)
+
+        cart_changes = add_discounts_in_cart(self.cart.items, self.customer)
+
+        if cart_changes is None:
+            custom_messagebox("Server Error",
+                              "Oops, there is something wrong with the data. Please contact the app admin",
+                              "error")
+        else:
+            self.cart.items = cart_changes[0]
+            self.gift = cart_changes[1]
+
+        self.render_cart_items()
+
+    def render_cart_items(self):
+        destroy_child_view(self.cart_frame)
+
+        height = len(self.cart.items)
+        for i in range(height):
+            tk.Label(self.cart_frame, text=self.cart.items[i].offering.name).grid(row=i, column=0)
+            tk.Label(self.cart_frame, text=self.cart.items[i].offering.price).grid(row=i, column=1)
+            tk.Label(self.cart_frame, text=self.cart.items[i].no_of_items).grid(row=i, column=3)
+            if self.cart.items[i].discount == 0.0:
+                discount = 'N/A'
+            else:
+                discount = self.cart.items[i].discount
+            tk.Label(self.cart_frame, text=discount).grid(row=i, column=4)
+            tk.Label(self.cart_frame, text=self.cart.items[i].total_price).grid(row=i, column=5)
 
     def proceed_to_pay(self):
         pass

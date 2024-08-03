@@ -6,7 +6,7 @@ from Data.DataLink.SqlDatabaseToData import get_last_customer
 from Controller.ManageCustomers.CustomersController import perform_add_customer
 
 
-customer_type = ["Guest", "Silver", "Gold", "Platinum"]
+customer_type = ["Guest", "Silver", "Gold", "Premium"]
 
 
 class AddCustomerInCheckout:
@@ -81,5 +81,5 @@ class AddCustomerInCheckout:
             custom_messagebox("Server Error", "Oops, something went wrong. Please try again.", "error")
         else:
             self.customer = get_last_customer()
-            checkout_screen.add_and_link_new(self.customer)
+            checkout_screen.add_and_link_customer(self.customer)
             custom_messagebox("Success", "The Customer was successfully added!", "info")

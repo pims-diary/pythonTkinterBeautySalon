@@ -5,7 +5,7 @@ from Controller.ManageCustomers.CustomersController import perform_add_customer
 from Resources.Common.Reuse import custom_messagebox, validate_fields
 from Data.Models.Customer import Customer
 
-customer_type = ["Guest", "Silver", "Gold", "Platinum"]
+customer_type = ["Guest", "Silver", "Gold", "Premium"]
 
 
 class AddCustomer(MainMenu):

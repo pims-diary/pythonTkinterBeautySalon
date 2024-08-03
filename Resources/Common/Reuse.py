@@ -16,7 +16,8 @@ def clean_master_view(master):
 
 def exit_screen(master):
     """ Terminate the Screen """
-    master.destroy()
+    if master is not None:
+        master.destroy()
 
 
 def custom_messagebox(title, message, msg_type):
