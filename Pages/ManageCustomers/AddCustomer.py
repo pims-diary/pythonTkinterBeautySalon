@@ -8,7 +8,7 @@ from Data.Models.Customer import Customer
 customer_type = ["Guest", "Silver", "Gold", "Platinum"]
 
 
-class AddNewCustomer(MainMenu):
+class AddCustomer(MainMenu):
     def __init__(self, root):
         super().__init__(root)
         self.root = root
@@ -18,6 +18,8 @@ class AddNewCustomer(MainMenu):
         self.email_entry = None
         self.phone_entry = None
         self.type_entry = None
+        self.pop_up_screen = None
+        self.customer = Customer()
 
     def render_add_new_customer_form(self):
         title_label = tk.Label(self.root,
@@ -70,4 +72,10 @@ class AddNewCustomer(MainMenu):
         customer.type = self.type_entry.get()
         customer.is_new = True
 
-        perform_add_customer(customer)
+        is_success = perform_add_customer(customer)
+
+        if not is_success:
+            custom_messagebox("Server Error", "Oops, something went wrong. Please try again.", "error")
+        else:
+            custom_messagebox("Success", "The Customer was successfully added!", "info")
+

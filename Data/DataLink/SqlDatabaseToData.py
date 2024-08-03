@@ -30,6 +30,7 @@ def validate_user(username, password):
 
 
 def create_customer(customer_id: int, customer: Customer):
+    is_success = False
     try:
         query = '''
         INSERT INTO Customers(customerId, name, email, phone, type, isNew)
@@ -40,14 +41,17 @@ def create_customer(customer_id: int, customer: Customer):
                        (customer_id, customer.name, customer.email, customer.phone, customer.type, customer.is_new))
 
         connection.commit()
+        is_success = True
 
     except pyodbc.Error as e:
         print("Error: ", e)
+        is_success = False
     finally:
         if 'cursor' in locals() and cursor:
             cursor.close()
         if 'connection' in locals() and connection:
             connection.close()
+        return is_success
 
 
 def get_last_customer_id():
@@ -60,6 +64,25 @@ def get_last_customer_id():
     customer_id: int = cursor.fetchall()[0][0]
 
     return customer_id
+
+
+def get_last_customer():
+    query = '''
+        SELECT * FROM Customers WHERE customerId=(SELECT max(customerId) FROM Customers)
+        '''
+
+    cursor.execute(query)
+    customer_info = cursor.fetchall()
+
+    customer = Customer()
+    customer.id = customer_info[0][0]
+    customer.name = customer_info[0][1]
+    customer.email = customer_info[0][2]
+    customer.phone = customer_info[0][3]
+    customer.type = customer_info[0][4]
+    customer.is_new = customer_info[0][5]
+
+    return customer
 
 
 def search_customer(customer_id):

@@ -35,3 +35,20 @@ CREATE TABLE Offerings(
 	PRIMARY KEY(offeringId)
 );
 ```
+
+### Insert a Row in Offerings Table
+```
+INSERT INTO Offerings(
+    offeringId, 
+    offeringName, 
+    description, 
+    offeringType, 
+    price
+) VALUES (
+    5009, 
+    'Olive Oil Styling Gel', 
+    'Olive oil helps your scalp naturally regulate its own moisturizing system', 
+    'Product', 
+    25.00
+)
+```

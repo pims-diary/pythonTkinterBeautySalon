@@ -1,4 +1,5 @@
 from Data.Models.Offering import Offering
+from Data.Models.Customer import Customer
 from Data.Models.Cart import CartItem
 
 
@@ -12,6 +13,18 @@ def store_offering(item):
     offering.price = item[4]
 
     return offering
+
+
+def store_customer(data):
+    customer = Customer()
+
+    customer.id = data[0]
+    customer.name = data[1]
+    customer.email = data[2]
+    customer.phone = data[3]
+    customer.type = data[4]
+
+    return customer
 
 
 def sort_cart(offering: Offering, items: list[CartItem], added_quantity: int):

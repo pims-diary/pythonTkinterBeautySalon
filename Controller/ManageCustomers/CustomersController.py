@@ -11,4 +11,5 @@ def generate_customer_id():
 
 def perform_add_customer(customer: Customer):
     customer_id = generate_customer_id()
-    create_customer(customer_id, customer)
+    is_success = create_customer(customer_id, customer)
+    return is_success

@@ -1,10 +1,19 @@
 class Customer:
     def __init__(self):
+        self.id = 0
         self.name = ""
         self.email = ""
         self.phone = ""
         self.type = ""
         self.is_new = False
+
+    @property  # this is also automatically the getter
+    def id(self):
+        return self._id
+
+    @id.setter
+    def id(self, value):
+        self._id = value
 
     @property  # this is also automatically the getter
     def name(self):
