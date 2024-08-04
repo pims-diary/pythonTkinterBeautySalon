@@ -4,7 +4,8 @@ from Resources.Common.Reuse import (validate_fields,
                                     custom_messagebox,
                                     destroy_child_view,
                                     exit_screen,
-                                    make_table)
+                                    single_row_table,
+                                    single_column_table)
 from Data.DataLink.SqlDatabaseToData import search_offering, search_customer
 from Data.Models.Offering import Offering
 from Data.Models.Cart import Cart
@@ -25,6 +26,7 @@ class Checkout(MainMenu):
         super().__init__(root)
         self.root = root
         self.root.title("Checkout")
+        self.root.geometry("1100x600")
         self.sheet = tksheet.Sheet(self.root)
 
         # Frames / sections within Checkout page
@@ -84,7 +86,7 @@ class Checkout(MainMenu):
         """
         self.add_item_screen = tk.Toplevel(self.root)
         self.add_item_screen.title("Search item")
-        self.add_item_screen.geometry("600x400")
+        self.add_item_screen.geometry("600x600")
         self.add_item_screen.configure(bg="white")
 
         title_label = tk.Label(self.add_item_screen, text="Search item", font=("Helvetica", 18, "bold"), bg="#add8e6",
@@ -131,13 +133,14 @@ class Checkout(MainMenu):
             custom_messagebox("No results", "An Item with this Item ID was not found", "error")
             return
         else:
-            height = 1
-            width = 5
             item = offering_info[0]
-            make_table(height, width, self.item_display_frame, item)
+            column_names = ["Id", "Name", "Type", "Description", "Price"]
+            table_frame = tk.Frame(self.item_display_frame)
+            table_frame.pack()
+            single_column_table(table_frame, item, column_names)
 
             add_to_cart_button = tk.Button(self.item_display_frame, text="ADD TO CART", command=self.add_to_cart)
-            add_to_cart_button.grid(row=2)
+            add_to_cart_button.pack()
 
             self.offering = store_offering(item)
 
@@ -204,15 +207,17 @@ class Checkout(MainMenu):
             question.pack(pady=7)
             tk.Button(self.customer_display_frame, text="CREATE CUSTOMER", command=self.add_customer).pack()
         else:
-            height = 1
-            width = 5
-            make_table(height, width, self.customer_display_frame, customer_info[0])
+            column_names = ["Id", "Name", "Email", "Phone", "Member Type", "Not Ordered Before?"]
 
-            self.cart.customer = store_customer(customer_info[0])
+            table_frame = tk.Frame(self.customer_display_frame)
+            table_frame.pack()
+            single_row_table(table_frame, customer_info[0], column_names)
 
             link_this_customer_button = tk.Button(self.customer_display_frame, text="LINK THIS CUSTOMERS",
                                                   command=lambda: self.add_and_link_customer(self.cart.customer))
-            link_this_customer_button.grid(row=2)
+            link_this_customer_button.pack()
+
+            self.cart.customer = store_customer(customer_info[0])
 
     def add_customer(self):
         self.add_customer_screen = tk.Toplevel(self.root)
@@ -228,14 +233,22 @@ class Checkout(MainMenu):
         exit_screen(self.link_customer_screen)
 
         self.cart.customer = customer
-        tk.Label(self.proceed_frame, text=self.cart.customer.id).grid(row=0, column=0)
-        tk.Label(self.proceed_frame, text=self.cart.customer.name).grid(row=0, column=1)
-        tk.Label(self.proceed_frame, text=self.cart.customer.email).grid(row=0, column=2)
-        tk.Label(self.proceed_frame, text=self.cart.customer.phone).grid(row=0, column=3)
-        tk.Label(self.proceed_frame, text=self.cart.customer.type).grid(row=0, column=4)
+        table_frame = tk.Frame(self.proceed_frame)
+        table_frame.pack()
+
+        tk.Label(table_frame, text="Id", font='Helvetica 10 bold').grid(row=0, column=0)
+        tk.Label(table_frame, text=self.cart.customer.id).grid(row=1, column=0)
+        tk.Label(table_frame, text="Name", font='Helvetica 10 bold').grid(row=0, column=1)
+        tk.Label(table_frame, text=self.cart.customer.name).grid(row=1, column=1)
+        tk.Label(table_frame, text="Email", font='Helvetica 10 bold').grid(row=0, column=2)
+        tk.Label(table_frame, text=self.cart.customer.email).grid(row=1, column=2)
+        tk.Label(table_frame, text="Phone", font='Helvetica 10 bold').grid(row=0, column=3)
+        tk.Label(table_frame, text=self.cart.customer.phone).grid(row=1, column=3)
+        tk.Label(table_frame, text="Type", font='Helvetica 10 bold').grid(row=0, column=4)
+        tk.Label(table_frame, text=self.cart.customer.type).grid(row=1, column=4)
 
         tk.Button(self.proceed_frame, text="PROCEED TO PAY",
-                  command=self.proceed_to_pay, pady=10).grid(row=1, column=2)
+                  command=self.proceed_to_pay, pady=10).pack()
 
         cart_changes = add_discounts_in_cart(self.cart.items, self.cart.customer)
 
@@ -258,10 +271,15 @@ class Checkout(MainMenu):
             tk.Label(self.cart_frame, text=self.cart.items[i].no_of_items).grid(row=i, column=3)
             if self.cart.items[i].discount == 0.0:
                 discount = 'N/A'
+                comments = ""
             else:
-                discount = self.cart.items[i].discount
+                discount = str(self.cart.items[i].discount) + "%"
+                offering_type = self.cart.items[i].offering.type + "s"
+                customer_type = self.cart.customer.type + " members"
+                comments = discount + " discount for " + customer_type + " on " + offering_type
             tk.Label(self.cart_frame, text=discount).grid(row=i, column=4)
             tk.Label(self.cart_frame, text="$" + str(self.cart.items[i].total_price)).grid(row=i, column=5)
+            tk.Label(self.cart_frame, text=comments).grid(row=i, column=6)
 
         tk.Label(self.cart_frame, text="Gift: ").grid(row=height + 1, column=0)
         if self.cart.customer.is_new:

@@ -46,11 +46,18 @@ def validate_fields(fields: tuple):
     return True
 
 
-def make_table(height, width, parent, items):
-    for i in range(height):  # Rows
-        for j in range(width):  # Columns
-            b = tk.Label(parent, text=items[j])
-            b.grid(row=i, column=j)
+def single_row_table(parent, items, column_names):
+    if len(items) == len(column_names):
+        for i in range(len(column_names)):
+            tk.Label(parent, text=column_names[i], font='Helvetica 10 bold').grid(row=0, column=i)
+            tk.Label(parent, text=items[i]).grid(row=1, column=i)
+
+
+def single_column_table(parent, items: list, row_names: list):
+    if len(items) == len(row_names):
+        for i in range(len(row_names)):
+            tk.Label(parent, text=row_names[i], font='Helvetica 10 bold').grid(row=i, column=0)
+            tk.Label(parent, text=items[i]).grid(row=i, column=1)
 
 
 def pack_all(widget):

@@ -1,7 +1,7 @@
 import tkinter as tk
 from Pages.ParentPages.MainMenu import MainMenu
 from Data.DataLink.SqlDatabaseToData import search_customer
-from Resources.Common.Reuse import custom_messagebox, validate_fields, destroy_child_view, make_table
+from Resources.Common.Reuse import custom_messagebox, validate_fields, destroy_child_view, single_row_table
 
 
 class SearchCustomer(MainMenu):
@@ -53,6 +53,5 @@ class SearchCustomer(MainMenu):
             custom_messagebox("No results", "A Customer with this Customer ID was not found", "error")
             return
         else:
-            height = 1
-            width = 5
-            make_table(height, width, self.frame, customer_info[0])
+            column_names = ["Id", "Name", "Email", "Phone", "Member Type", "Not Ordered Before?"]
+            single_row_table(self.frame, customer_info[0], column_names)
