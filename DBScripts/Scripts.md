@@ -52,3 +52,15 @@ INSERT INTO Offerings(
     25.00
 )
 ```
+
+### Create Bills Table:
+```
+CREATE TABLE Bills(
+	billId INT NOT NULL,
+  	customerId VARCHAR(128),
+  	customerEmail VARCHAR(128),
+  	paymentDetails VARCHAR(128),
+	items VARBINARY(MAX),
+	PRIMARY KEY(billId)
+);
+```

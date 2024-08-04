@@ -1,6 +1,7 @@
 import tkinter as tk
 from tkinter.ttk import Notebook
 from Data.Models.Cart import Cart
+from Resources.Common.Rules import Discounts
 from Resources.Common.Reuse import destroy_child_view
 
 
@@ -13,6 +14,19 @@ class PaymentMethod:
         self.order_summary_frame = None
         self.payment_frame = None
         self.tab_control = None
+        self.tab_credit_card = None
+        self.tab_cash = None
+        self.balance_frame = None
+
+        # Entries
+        self.card_number_entry = None
+        self.card_name_entry = None
+        self.card_expiry_entry = None
+        self.card_cvv_entry = None
+        self.cash_by_customer = None
+
+        # Labels
+        self.balance_display = None
 
         self.render_page()
 
@@ -52,8 +66,11 @@ class PaymentMethod:
         tk.Label(self.order_summary_frame, text="Gift: ").grid(row=height + 1, column=0)
         if self.cart.customer.is_new:
             gift = "20.00"
+            self.cart.gift = Discounts.NEW_CUSTOMER_GIFT_AMOUNT
         else:
             gift = "0.00"
+            self.cart.gift = Discounts.OLD_CUSTOMER_GIFT_AMOUNT
+
         tk.Label(self.order_summary_frame, text="$" + str(gift)).grid(row=height + 1, column=2)
 
         tk.Label(self.order_summary_frame, text="Total Amount: ").grid(row=height + 2, column=0)
@@ -63,15 +80,50 @@ class PaymentMethod:
         self.tab_control = Notebook(self.payment_frame)
 
         # create a number of tabs you want to add
-        tab1 = tk.Frame(self.tab_control, width=600, height=280)
-        tab2 = tk.Frame(self.tab_control, width=600, height=280)
+        self.tab_credit_card = tk.Frame(self.tab_control, width=600, height=280)
+        self.tab_cash = tk.Frame(self.tab_control, width=600, height=280)
 
         # add the tabs to the tabcontrol
-        self.tab_control.add(tab1, text='Credit Card')
-        self.tab_control.add(tab2, text='Cash Payment')
+        self.tab_control.add(self.tab_credit_card, text='Credit Card')
+        self.tab_control.add(self.tab_cash, text='Cash Payment')
 
         # grid the tabcontrol
         self.tab_control.pack(fill=tk.BOTH)
 
-        tk.Label(tab1, text="Tab 1").pack()
-        tk.Label(tab2, text="Tab 2").pack()
+        self.render_credit_card_tab_details()
+        self.render_cash_tab_details()
+
+    def render_credit_card_tab_details(self):
+        card_fields_frame = tk.Frame(self.tab_credit_card)
+        card_fields_frame.pack()
+        tk.Label(card_fields_frame, text="Card number").grid(row=0, column=0)
+        self.card_number_entry = tk.Entry(card_fields_frame)
+        self.card_number_entry.grid(row=0, column=1)
+
+        tk.Label(card_fields_frame, text="Name on card").grid(row=1, column=0)
+        self.card_name_entry = tk.Entry(card_fields_frame)
+        self.card_name_entry.grid(row=1, column=1)
+
+        tk.Label(card_fields_frame, text="Expiry date").grid(row=2, column=0)
+        self.card_expiry_entry = tk.Entry(card_fields_frame)
+        self.card_expiry_entry.grid(row=2, column=1)
+
+        tk.Label(card_fields_frame, text="CVV").grid(row=3, column=0)
+        self.card_cvv_entry = tk.Entry(card_fields_frame)
+        self.card_cvv_entry.grid(row=3, column=1)
+
+        tk.Button(self.tab_credit_card, text="COMPLETE PAYMENT").pack()
+
+    def render_cash_tab_details(self):
+        cash_fields_frame = tk.Frame(self.tab_cash)
+        cash_fields_frame.pack()
+
+        tk.Label(cash_fields_frame, text="How much cash in NZD did the customer offer?").pack()
+        self.cash_by_customer = tk.Entry(cash_fields_frame)
+        self.cash_by_customer.pack(pady=7)
+        tk.Button(cash_fields_frame, text="Check Balance", command=self.check_balance_amount).pack()
+        self.balance_frame = tk.Frame(cash_fields_frame)
+        self.balance_frame.pack()
+
+    def check_balance_amount(self):
+        pass

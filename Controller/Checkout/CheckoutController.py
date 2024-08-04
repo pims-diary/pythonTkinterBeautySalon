@@ -1,7 +1,10 @@
 from Data.Models.Offering import Offering
 from Data.Models.Customer import Customer
 from Data.Models.Cart import CartItem
+from Data.Models.Cart import Cart
+from Data.Models.Bill import Bill
 from Resources.Common.Rules import Discounts
+from Data.DataLink.SqlDatabaseToData import create_bill, get_last_bill_id
 
 
 def store_offering(item):
@@ -79,11 +82,36 @@ def add_discounts_in_cart(items: list[CartItem], customer: Customer):
 
 
 def calculate_total_amount(items: list[CartItem], customer: Customer):
+    """
+    Calculate the total amount the customer has to pay
+    """
     total_amount = 0.0
+
+    # Calculate the sum of the total price for each offering
+    # with multiple items possible in each of them
     for item in items:
         total_amount = total_amount + item.total_price
 
+    # Deduct gift amount from total amount, if applicable
     if customer.is_new:
         total_amount = total_amount - Discounts.NEW_CUSTOMER_GIFT_AMOUNT
 
     return total_amount
+
+
+def insert_new_bill(payment_details: str, cart: Cart):
+    bill_id = generate_bill_id()
+    bill = Bill()
+    bill.bill_id = bill_id
+    bill.customer_id = cart.customer.id
+    bill.customer_email = cart.customer.email
+    bill.payment_details = payment_details
+    bill.cart = cart
+    is_success = create_bill(bill)
+    return is_success
+
+
+def generate_bill_id():
+    bill_id = get_last_bill_id()
+    bill_id = bill_id + 1
+    return bill_id

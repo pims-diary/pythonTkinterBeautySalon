@@ -5,6 +5,7 @@ from Data.Models.Customer import Customer
 class Cart:
     def __init__(self):
         self.items: list[CartItem] = []
+        self.gift = 0.0
         self.total_amount = 0.0
         self.customer = Customer()
 
@@ -15,6 +16,14 @@ class Cart:
     @items.setter
     def items(self, value):
         self._items = value
+
+    @property
+    def gift(self):
+        return self._gift
+
+    @gift.setter
+    def gift(self, value):
+        self._gift = value
 
     @property
     def total_amount(self):

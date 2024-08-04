@@ -1,5 +1,6 @@
 import pyodbc
 from Data.Models.Customer import Customer
+from Data.Models.Bill import Bill
 
 connection_string = ("Driver={ODBC Driver 17 for SQL Server};"
                      "Server=20220661-PRIYAN;"
@@ -103,3 +104,40 @@ def search_offering(offering_id):
     cursor.execute(query, offering_id)
 
     return cursor.fetchall()
+
+
+def create_bill(bill: Bill):
+    is_success = False
+    try:
+        query = '''
+        INSERT INTO Bills(billId, customerId, customerEmail, paymentDetails, cart)
+        VALUES (?, ?, ?, ?, ?)
+        '''
+
+        cursor.execute(query,
+                       (bill.bill_id, bill.customer_id, bill.customer_email, bill.payment_details, bill.cart))
+
+        connection.commit()
+        is_success = True
+
+    except pyodbc.Error as e:
+        print("Error: ", e)
+        is_success = False
+    finally:
+        if 'cursor' in locals() and cursor:
+            cursor.close()
+        if 'connection' in locals() and connection:
+            connection.close()
+        return is_success
+
+
+def get_last_bill_id():
+    query = '''
+        SELECT billId FROM Bills WHERE billId=(SELECT max(billId) FROM Bills)
+        '''
+
+    cursor.execute(query)
+
+    bill_id: int = cursor.fetchall()[0][0]
+
+    return bill_id

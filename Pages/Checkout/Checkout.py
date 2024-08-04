@@ -1,4 +1,5 @@
 from Pages.ParentPages.MainMenu import MainMenu
+from Resources.Common.Rules import Discounts
 from Resources.Common.Reuse import (validate_fields,
                                     custom_messagebox,
                                     destroy_child_view,
@@ -265,8 +266,11 @@ class Checkout(MainMenu):
         tk.Label(self.cart_frame, text="Gift: ").grid(row=height + 1, column=0)
         if self.cart.customer.is_new:
             gift = "20.00"
+            self.cart.gift = Discounts.NEW_CUSTOMER_GIFT_AMOUNT
         else:
             gift = "0.00"
+            self.cart.gift = Discounts.OLD_CUSTOMER_GIFT_AMOUNT
+
         tk.Label(self.cart_frame, text="$" + str(gift)).grid(row=height + 1, column=2)
 
         tk.Label(self.cart_frame, text="Total Amount: ").grid(row=height + 2, column=0)
