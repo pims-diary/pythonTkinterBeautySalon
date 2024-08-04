@@ -40,8 +40,8 @@ class Offering:
 
     @property  # this is also automatically the getter
     def price(self):
-        return self._is_new
+        return self._price
 
     @price.setter
     def price(self, value):
-        self._is_new = value
+        self._price = value

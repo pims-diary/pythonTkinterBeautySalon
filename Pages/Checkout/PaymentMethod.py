@@ -1,13 +1,19 @@
 import tkinter as tk
 from tkinter.ttk import Notebook
+from Controller.Checkout.CheckoutController import insert_new_bill
 from Data.Models.Cart import Cart
 from Resources.Common.Rules import Discounts
-from Resources.Common.Reuse import destroy_child_view
+from Resources.Common.Reuse import destroy_child_view, exit_screen, custom_messagebox
+from Pages.ParentPages.PopUpForm import PopUpForm
+from Pages.Navigation.PageNavigation import navigate_to, Feature
 
 
-class PaymentMethod:
+class PaymentMethod(PopUpForm):
     def __init__(self, root, cart: Cart):
+        super().__init__(root)
         self.root = root
+        self.payment_window = self.new_window
+        self.payment_window.geometry("600x400")
         self.cart = cart
 
         # Frames
@@ -31,18 +37,18 @@ class PaymentMethod:
         self.render_page()
 
     def render_page(self):
-        title_label = tk.Label(self.root, text="Order Summary", font=("Helvetica", 18, "bold"), bg="#add8e6",
+        title_label = tk.Label(self.payment_window, text="Order Summary", font=("Helvetica", 18, "bold"), bg="#add8e6",
                                fg="#333333")
         title_label.pack(pady=30)
 
-        self.order_summary_frame = tk.Frame(self.root)
+        self.order_summary_frame = tk.Frame(self.payment_window)
         self.order_summary_frame.pack()
 
-        title_label = tk.Label(self.root, text="Pay by: ", font=("Helvetica", 14, "bold"), bg="#add8e6",
+        title_label = tk.Label(self.payment_window, text="Pay by: ", font=("Helvetica", 14, "bold"), bg="#add8e6",
                                fg="#333333")
         title_label.pack(pady=30)
 
-        self.payment_frame = tk.Frame(self.root)
+        self.payment_frame = tk.Frame(self.payment_window)
         self.payment_frame.pack(fill=tk.BOTH)
 
         self.render_order_summary()
@@ -112,7 +118,7 @@ class PaymentMethod:
         self.card_cvv_entry = tk.Entry(card_fields_frame)
         self.card_cvv_entry.grid(row=3, column=1)
 
-        tk.Button(self.tab_credit_card, text="COMPLETE PAYMENT").pack()
+        tk.Button(self.tab_credit_card, text="COMPLETE PAYMENT", command=self.complete_payment).pack()
 
     def render_cash_tab_details(self):
         cash_fields_frame = tk.Frame(self.tab_cash)
@@ -126,4 +132,13 @@ class PaymentMethod:
         self.balance_frame.pack()
 
     def check_balance_amount(self):
-        pass
+        tk.Button(self.balance_frame, text="COMPLETE PAYMENT", command=self.complete_payment).pack()
+
+    def complete_payment(self):
+        is_success = insert_new_bill("", self.cart)
+        if is_success:
+            exit_screen(self.payment_window)
+            navigate_to(Feature.HOME, self.root)
+            custom_messagebox("Payment Complete!", "The order has been completed", "info")
+        else:
+            custom_messagebox("Payment Failed", "There was an error in the Order Payment", "error")

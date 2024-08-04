@@ -60,7 +60,7 @@ CREATE TABLE Bills(
   	customerId VARCHAR(128),
   	customerEmail VARCHAR(128),
   	paymentDetails VARCHAR(128),
-	items VARBINARY(MAX),
+	orders VARCHAR(MAX),
 	PRIMARY KEY(billId)
 );
 ```

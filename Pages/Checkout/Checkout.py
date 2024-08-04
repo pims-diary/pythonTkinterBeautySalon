@@ -4,8 +4,7 @@ from Resources.Common.Reuse import (validate_fields,
                                     custom_messagebox,
                                     destroy_child_view,
                                     exit_screen,
-                                    make_table,
-                                    clean_master_view)
+                                    make_table)
 from Data.DataLink.SqlDatabaseToData import search_offering, search_customer
 from Data.Models.Offering import Offering
 from Data.Models.Cart import Cart
@@ -25,6 +24,7 @@ class Checkout(MainMenu):
     def __init__(self, root):
         super().__init__(root)
         self.root = root
+        self.root.title("Checkout")
         self.sheet = tksheet.Sheet(self.root)
 
         # Frames / sections within Checkout page
@@ -278,7 +278,4 @@ class Checkout(MainMenu):
         tk.Label(self.cart_frame, text="$" + str(self.cart.total_amount)).grid(row=height + 2, column=2)
 
     def proceed_to_pay(self):
-        clean_master_view(self.root)
         PaymentMethod(self.root, self.cart)
-
-
