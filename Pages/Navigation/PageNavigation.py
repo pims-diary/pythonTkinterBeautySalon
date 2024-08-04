@@ -6,13 +6,13 @@ class Feature(Enum):
     ADD_CUSTOMER = auto()
     SEARCH_CUSTOMER = auto()
     CHECKOUT = auto()
+    SEARCH_BILL = auto()
 
 
 def navigate_to(feature_name: Feature, root):
     if feature_name == Feature.HOME:
         from Pages.Home.Home import Home
-        home = Home(root)
-        home.render_home_page()
+        Home(root)
     elif feature_name == Feature.ADD_CUSTOMER:
         from Pages.ManageCustomers.AddCustomer import AddCustomer
         customer = AddCustomer(root)
@@ -25,3 +25,6 @@ def navigate_to(feature_name: Feature, root):
         from Pages.Checkout.Checkout import Checkout
         checkout = Checkout(root)
         checkout.start_checkout_flow()
+    elif feature_name == Feature.SEARCH_BILL:
+        from Pages.ManageBill.SearchBill import SearchBill
+        SearchBill(root)

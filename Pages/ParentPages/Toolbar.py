@@ -22,7 +22,7 @@ class Toolbar:
 
         self.toolbar_menu.add_command(label="Home", command=self.home)
         self.toolbar_menu.add_command(label="Checkout", command=self.checkout)
-        self.toolbar_menu.add_command(label="Billing", command=self.billing)
+        self.toolbar_menu.add_command(label="Search Bill", command=self.search_bill)
         self.toolbar_menu.add_separator()
         self.toolbar_menu.add_command(label="Exit", command=self.root.quit)
 
@@ -31,13 +31,13 @@ class Toolbar:
 
         self.toolbar_customers.add_command(label="Add Customer", command=self.add_customer)
         self.toolbar_customers.add_command(label="Search Customer", command=self.search_customer)
-        self.toolbar_customers.add_command(label="Members", command=self.members)
+        # self.toolbar_customers.add_command(label="Members", command=self.members)
 
-        self.toolbar_offerings = tk.Menu(self.menu_bar, tearoff=0)
-        self.menu_bar.add_cascade(label="Offerings", menu=self.toolbar_offerings)
+        # self.toolbar_offerings = tk.Menu(self.menu_bar, tearoff=0)
+        # self.menu_bar.add_cascade(label="Offerings", menu=self.toolbar_offerings)
 
-        self.toolbar_offerings.add_command(label="Services", command=self.services)
-        self.toolbar_offerings.add_command(label="Products", command=self.products)
+        # self.toolbar_offerings.add_command(label="Services", command=self.services)
+        # self.toolbar_offerings.add_command(label="Products", command=self.products)
 
     def home(self):
         navigate_to(Feature.HOME, self.root)
@@ -63,6 +63,6 @@ class Toolbar:
         """Open Members form"""
         PopUpForm(self.root, "Members")
 
-    def billing(self):
+    def search_bill(self):
         """Open Billing form"""
-        PopUpForm(self.root, "Billing")
+        navigate_to(Feature.SEARCH_BILL, self.root)

@@ -146,6 +146,35 @@ def get_last_bill_id():
     return bill_id
 
 
+def search_bill(bill_id):
+    query = '''
+        SELECT * FROM Bills WHERE billId=?
+        '''
+
+    cursor.execute(query, bill_id)
+
+    return cursor.fetchall()
+
+
+def fetch_bill(bill_id):
+
+    contents = search_bill(bill_id)
+
+    if len(contents) == 0:
+        return None
+
+    bill = Bill()
+    bill.bill_id = contents[0][0]
+    bill.customer_id = contents[0][1]
+    bill.customer_email = contents[0][2]
+    bill.payment_details = contents[0][3]
+
+    cart = create_cart_object_from_db_string(contents[0][4])
+    bill.cart = cart
+
+    return bill
+
+
 def create_orders_string(cart: Cart):
     cart_items: list[CartItem] = cart.items
     items_str = ""
@@ -181,8 +210,9 @@ def create_cart_object_from_db_string(orders: str):
     cart_item = CartItem()
 
     # Separate the string into strings for items, customer, total amount and gift
-    items_str = orders.split(";items;")[0]
-    customer_str = orders.split(";customer;")[1]
+    items_str = orders.split(";items;")[1]
+    test = orders.split(";cust;")
+    customer_str = test[1]
     total_amount_str = orders.split(";total;")[1]
     gift_str = orders.split(";gift;")[1]
 

@@ -72,10 +72,11 @@ class AddCustomer(MainMenu):
         customer.type = self.type_entry.get()
         customer.is_new = True
 
-        is_success = perform_add_customer(customer)
+        result = perform_add_customer(customer)
+        is_success = result[0]
 
         if not is_success:
             custom_messagebox("Server Error", "Oops, something went wrong. Please try again.", "error")
         else:
-            custom_messagebox("Success", "The Customer was successfully added!", "info")
+            custom_messagebox("Success", "The Customer was successfully added!\nCUSTOMER ID: " + str(result[1]), "info")
 

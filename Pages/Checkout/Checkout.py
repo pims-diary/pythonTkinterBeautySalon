@@ -61,15 +61,13 @@ class Checkout(MainMenu):
         self.cart_frame.pack()
 
         # Add button
-        add_button = tk.Button(self.root, text="ADD ITEM", command=self.add_item)
+        add_button = tk.Button(self.root, text="ADD ITEM", command=self.add_item,
+                               font=("Times", 10, "bold"), bg="#4caf50", fg="#ffffff")
         add_button.pack()
 
-        # Remove button
-        remove_button = tk.Button(self.root, text="REMOVE")
-        remove_button.pack()
-
         # Link a Customer button
-        add_button = tk.Button(self.root, text="LINK A CUSTOMER", command=self.link_customer)
+        add_button = tk.Button(self.root, text="LINK A CUSTOMER", command=self.link_customer,
+                               font=("Times", 10, "bold"), bg="#4caf50", fg="#ffffff")
         add_button.pack()
 
         # Proceed to payment section
@@ -139,7 +137,8 @@ class Checkout(MainMenu):
             table_frame.pack()
             single_column_table(table_frame, item, column_names)
 
-            add_to_cart_button = tk.Button(self.item_display_frame, text="ADD TO CART", command=self.add_to_cart)
+            add_to_cart_button = tk.Button(self.item_display_frame, text="ADD TO CART", command=self.add_to_cart,
+                                           font=("Times", 10, "bold"), bg="#4caf50", fg="#ffffff")
             add_to_cart_button.pack()
 
             self.offering = store_offering(item)
@@ -205,7 +204,8 @@ class Checkout(MainMenu):
             not_found_error.pack(pady=7)
             question = tk.Label(self.customer_display_frame, text="Do you want to create a new Customer?")
             question.pack(pady=7)
-            tk.Button(self.customer_display_frame, text="CREATE CUSTOMER", command=self.add_customer).pack()
+            tk.Button(self.customer_display_frame, text="CREATE CUSTOMER", command=self.add_customer,
+                      font=("Times", 16, "bold"), bg="#4caf50", fg="#ffffff").pack()
         else:
             column_names = ["Id", "Name", "Email", "Phone", "Member Type", "Not Ordered Before?"]
 
@@ -214,7 +214,8 @@ class Checkout(MainMenu):
             single_row_table(table_frame, customer_info[0], column_names)
 
             link_this_customer_button = tk.Button(self.customer_display_frame, text="LINK THIS CUSTOMERS",
-                                                  command=lambda: self.add_and_link_customer(self.cart.customer))
+                                                  command=lambda: self.add_and_link_customer(self.cart.customer),
+                                                  font=("Times", 10, "bold"), bg="#4caf50", fg="#ffffff")
             link_this_customer_button.pack()
 
             self.cart.customer = store_customer(customer_info[0])
@@ -248,7 +249,8 @@ class Checkout(MainMenu):
         tk.Label(table_frame, text=self.cart.customer.type).grid(row=1, column=4)
 
         tk.Button(self.proceed_frame, text="PROCEED TO PAY",
-                  command=self.proceed_to_pay, pady=10).pack()
+                  command=self.proceed_to_pay, pady=10,
+                  font=("Times", 10, "bold"), bg="#4caf50", fg="#ffffff").pack()
 
         cart_changes = add_discounts_in_cart(self.cart.items, self.cart.customer)
 

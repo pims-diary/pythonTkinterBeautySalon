@@ -108,10 +108,14 @@ def insert_new_bill(payment_details: str, cart: Cart):
     bill.payment_details = payment_details
     bill.cart = cart
     is_success = create_bill(bill)
-    return is_success
+    return is_success, bill_id
 
 
 def generate_bill_id():
     bill_id = get_last_bill_id()
     bill_id = bill_id + 1
     return bill_id
+
+
+def calculate_balance(cash_amount, total_amount):
+    return cash_amount - total_amount

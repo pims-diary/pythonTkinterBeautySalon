@@ -1,6 +1,6 @@
 import tkinter as tk
 from tkinter.ttk import Notebook
-from Controller.Checkout.CheckoutController import insert_new_bill
+from Controller.Checkout.CheckoutController import insert_new_bill, calculate_balance
 from Data.Models.Cart import Cart
 from Resources.Common.Rules import Discounts
 from Resources.Common.Reuse import destroy_child_view, exit_screen, custom_messagebox
@@ -13,7 +13,7 @@ class PaymentMethod(PopUpForm):
         super().__init__(root)
         self.root = root
         self.payment_window = self.new_window
-        self.payment_window.geometry("600x400")
+        self.payment_window.geometry("600x500")
         self.cart = cart
 
         # Frames
@@ -132,13 +132,42 @@ class PaymentMethod(PopUpForm):
         self.balance_frame.pack()
 
     def check_balance_amount(self):
-        tk.Button(self.balance_frame, text="COMPLETE PAYMENT", command=self.complete_payment).pack()
+        try:
+            cash_amount = float(self.cash_by_customer.get())
+        except ValueError:
+            custom_messagebox("Invalid Input", "Please provide a monetory amount", "error")
+            return
+
+        destroy_child_view(self.balance_frame)
+        balance_amount = calculate_balance(cash_amount, self.cart.total_amount)
+        if balance_amount == 0.0:
+            tk.Label(self.balance_frame,
+                     text="No balance is owed. Click on the button below to complete payment.").pack()
+            tk.Button(self.balance_frame, text="COMPLETE PAYMENT", command=self.complete_payment).pack()
+        elif balance_amount > 0.0:
+            tk.Label(self.balance_frame, text="Please return $" + str(balance_amount) + " to the customer, and then "
+                                                                                        "click on the button below to "
+                                                                                        "complete payment").pack()
+            tk.Button(self.balance_frame, text="COMPLETE PAYMENT", command=self.complete_payment).pack()
+        else:
+            tk.Label(self.balance_frame,
+                     text="The customer needs to pay $" + str(balance_amount)[
+                                                          1:] + " more to complete payment. ").pack()
+
+            tk.Label(self.balance_frame,
+                     text="Fill in the new full amount paid by the customer above and click on Check Balance button "
+                          "again to continue.").pack()
 
     def complete_payment(self):
-        is_success = insert_new_bill("", self.cart)
+        if len(self.card_number_entry.get()) == 0:
+            payment_method = "Cash"
+        else:
+            payment_method = self.card_number_entry.get()
+        result = insert_new_bill(payment_method, self.cart)
+        is_success = result[0]
         if is_success:
             exit_screen(self.payment_window)
             navigate_to(Feature.HOME, self.root)
-            custom_messagebox("Payment Complete!", "The order has been completed", "info")
+            custom_messagebox("Payment Complete!", "The order has been completed.\nORDER NUMBER: " + str(result[1]), "info")
         else:
             custom_messagebox("Payment Failed", "There was an error in the Order Payment", "error")
