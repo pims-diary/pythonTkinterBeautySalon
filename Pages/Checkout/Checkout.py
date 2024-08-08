@@ -18,7 +18,6 @@ from Controller.Checkout.CheckoutController import (store_offering,
 from Pages.ManageCustomers.AddCustomerInCheckout import AddCustomerInCheckout
 from Pages.Checkout.PaymentMethod import PaymentMethod
 import tkinter as tk
-import tksheet
 
 
 class Checkout(MainMenu):
@@ -27,7 +26,6 @@ class Checkout(MainMenu):
         self.root = root
         self.root.title("Checkout")
         self.root.geometry("1100x600")
-        self.sheet = tksheet.Sheet(self.root)
 
         # Frames / sections within Checkout page
         self.item_display_frame = None

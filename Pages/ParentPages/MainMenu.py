@@ -19,3 +19,6 @@ class MainMenu:
 
         tools = Toolbar(self.root)
         tools.render_toolbar()
+
+    def render_page_contents(self):
+        tk.Label(self.root, text="This page is a Work in Progress...")

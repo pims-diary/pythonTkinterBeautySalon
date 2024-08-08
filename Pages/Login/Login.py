@@ -1,7 +1,8 @@
 import tkinter as tk
+
+from Data.DataLink.SqlDatabaseToData import validate_user
 from Resources.Common.Reuse import custom_messagebox, validate_fields
 from Pages.Navigation.PageNavigation import navigate_to, Feature
-from Controller.Login.LoginController import login
 
 
 class Login:
@@ -51,7 +52,7 @@ class Login:
         entered_password = self.password_entry.get()
 
         # Check username and password exist in database
-        login_result = login(entered_username, entered_password)
+        login_result = validate_user(entered_username, entered_password)
 
         if login_result:
             # Navigate to Home page

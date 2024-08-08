@@ -1,6 +1,3 @@
-from enum import Enum
-
-
 class Discounts:
     PRODUCT_DISCOUNT_PERCENT = 10.0
     SERVICE_DISCOUNT_FOR_PREMIUM_PERCENT = 20.0

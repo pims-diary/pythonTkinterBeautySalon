@@ -12,7 +12,8 @@ class Feature(Enum):
 def navigate_to(feature_name: Feature, root):
     if feature_name == Feature.HOME:
         from Pages.Home.Home import Home
-        Home(root)
+        home = Home(root)
+        home.render_page_contents()
     elif feature_name == Feature.ADD_CUSTOMER:
         from Pages.ManageCustomers.AddCustomer import AddCustomer
         customer = AddCustomer(root)
