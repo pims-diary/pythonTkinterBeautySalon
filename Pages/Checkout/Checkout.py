@@ -17,6 +17,7 @@ from Controller.Checkout.CheckoutController import (store_offering,
                                                     calculate_total_amount)
 from Pages.ManageCustomers.AddCustomerInCheckout import AddCustomerInCheckout
 from Pages.Checkout.PaymentMethod import PaymentMethod
+from Pages.Checkout.FirstBillEntry import FirstBillEntry
 import tkinter as tk
 
 
@@ -297,3 +298,7 @@ class Checkout(MainMenu):
 
     def proceed_to_pay(self):
         PaymentMethod(self.root, self.cart)
+
+    def create_first_entry(self):
+        entry = FirstBillEntry(self.root)
+        entry.first_bill_entry()

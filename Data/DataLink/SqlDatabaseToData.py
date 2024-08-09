@@ -44,7 +44,7 @@ def create_customer(customer_id: int, customer: Customer):
 
         connection.commit()
         is_success = True
-
+    # Exception handling: Handle any unknown errors
     except pyodbc.Error as e:
         print("Error: ", e)
         is_success = False
@@ -169,6 +169,7 @@ def fetch_bill(bill_id):
     bill.customer_email = contents[0][2]
     bill.payment_details = contents[0][3]
 
+    # Data structure: List returned by function
     cart = create_cart_object_from_db_string(contents[0][4])
     bill.cart = cart
 
@@ -233,6 +234,7 @@ def create_cart_object_from_db_string(orders: str):
             cart_item.no_of_items = int(item_properties[5])
             cart_item.discount = float(item_properties[6])
 
+            # Data structure: List population
             cart.items.append(cart_item)
 
     # Add details of the associated customer within the cart
@@ -249,12 +251,3 @@ def create_cart_object_from_db_string(orders: str):
     cart.gift = float(gift_str)
 
     return cart
-
-
-# Sample
-# string = ";item;My Item;item;;item;My Other Item;item;;item;My Third Item;item;;item;My Last Item;item;"
-#
-# array = string.split(";item;")
-#
-# for item in array:
-#     print(item)

@@ -58,6 +58,7 @@ class PaymentMethod(PopUpForm):
         destroy_child_view(self.order_summary_frame)
 
         height = len(self.cart.items)
+        # Control structure: Looping implementation
         for i in range(height):
             tk.Label(self.order_summary_frame, text=self.cart.items[i].offering.name).grid(row=i, column=0)
             tk.Label(self.order_summary_frame, text="$" + str(self.cart.items[i].offering.price)).grid(row=i, column=1)
@@ -163,7 +164,10 @@ class PaymentMethod(PopUpForm):
             payment_method = "Cash"
         else:
             payment_method = self.card_number_entry.get()
+        # Data structure: Tuple returned by the function
         result = insert_new_bill(payment_method, self.cart)
+
+        # Data structure: Tuple - Value used from tuple
         is_success = result[0]
         if is_success:
             exit_screen(self.payment_window)

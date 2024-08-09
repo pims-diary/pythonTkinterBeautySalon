@@ -4,6 +4,7 @@ from Data.Models.Customer import Customer
 
 class Cart:
     def __init__(self):
+        # Data Structure: List implementation
         self.items: list[CartItem] = []
         self.gift = 0.0
         self.total_amount = 0.0

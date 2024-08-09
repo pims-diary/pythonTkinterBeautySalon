@@ -41,12 +41,15 @@ class SearchCustomer(MainMenu):
             custom_messagebox("Blank Field Error", "Cannot leave Customer ID field blank", "error")
             return
 
+        # Exception handling: Check for errors
         try:
             customer_id = int(self.id_entry.get())
+        # Exception handling: Handle clear known errors
         except TypeError:
             custom_messagebox("Format Error", "Customer ID field must be a whole number", "error")
             return
 
+        # Exception handling: Handle if no errors are detected - The program continues
         customer_info = search_customer(customer_id)
 
         if len(customer_info) == 0:

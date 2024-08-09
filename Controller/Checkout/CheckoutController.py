@@ -54,6 +54,7 @@ def add_discounts_in_cart(items: list[CartItem], customer: Customer):
     - the customer type,
     - the item type,
     """
+    # Control structure: Conditional implementation
     # Check if Member
     if not customer.type == "Guest":
         # if Member, check Product / Service
@@ -108,6 +109,7 @@ def insert_new_bill(payment_details: str, cart: Cart):
     bill.payment_details = payment_details
     bill.cart = cart
     is_success = create_bill(bill)
+    # Data Structure: Tuple implementation
     return is_success, bill_id
 
 
